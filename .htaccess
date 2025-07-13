@@ -1,0 +1,5 @@
+# Permitir acceder a admin.php escribiendo /admin en la URL
+RewriteEngine On
+
+# Redirige /admin (sin extensión) a admin.php
+RewriteRule ^admin$ admin.php [L,QSA]
