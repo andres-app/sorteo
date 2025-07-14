@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . '/../models/Numero.php';
+require_once __DIR__ . '/../models/Empresa.php'; // <-- ¡Asegúrate de incluir esto!
 
-class SorteoController {
-    public function index() {
+class SorteoController
+{
+    public function index()
+    {
         $numeroModel = new Numero();
         $numeros = $numeroModel->getNumeros();
         $precio_numero = 8;
@@ -12,7 +15,8 @@ class SorteoController {
         require __DIR__ . '/../views/sorteo/index.php';
     }
 
-    public function admin() {
+    public function admin()
+    {
         session_start();
         $admin_pass = '123123';
         if (isset($_POST['login'])) {
@@ -37,13 +41,14 @@ class SorteoController {
         require __DIR__ . '/../views/admin/dashboard.php';
     }
 
-    public function registrar() {
+    public function registrar()
+    {
         $numeroModel = new Numero();
         $numero = $_POST['numero'];
         $nombre = $_POST['nombre'];
         $whatsapp = '51' . $_POST['whatsapp'];
         $sorteo_id = 1;
-    
+
         if (isset($_POST['editar'])) {
             $numeroModel->actualizarNumero($numero, $nombre, $whatsapp, $sorteo_id);
             header('Location: /sorteo/public/admin?edit=ok');
@@ -59,6 +64,62 @@ class SorteoController {
             }
         }
     }
+
+    public function empresas()
+    {
+        $empresaModel = new Empresa();
+        $empresas = $empresaModel->getAll();
+        require __DIR__ . '/../views/admin/empresas.php';
+    }
+
+    public function crearEmpresa()
+    {
+        $empresaModel = new Empresa();
+        $empresaModel->create(
+            $_POST['nombre'],
+            $_POST['ruc'],
+            $_POST['direccion'],
+            $_POST['telefono'],
+            $_POST['email']
+        );
+        header('Location: /sorteo/public/empresas');
+        exit;
+    }
+
+    public function editarEmpresa()
+    {
+        $empresaModel = new Empresa();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $empresaModel->update(
+                $_POST['id'],
+                $_POST['nombre'],
+                $_POST['ruc'],
+                $_POST['direccion'],
+                $_POST['telefono'],
+                $_POST['email']
+            );
+            header('Location: /sorteo/public/empresas?ok=edit');
+            exit;
+        } else {
+            $empresa = $empresaModel->get($_GET['id']);
+            require __DIR__ . '/../views/admin/empresa_editar.php';
+        }
+    }
+
+    public function eliminarEmpresa()
+    {
+        $empresaModel = new Empresa();
+        $result = $empresaModel->delete($_GET['id']);
+        if ($result) {
+            header('Location: /sorteo/public/empresas?ok=del');
+        } else {
+            header('Location: /sorteo/public/empresas?error=noborrar');
+        }
+        exit;
+    }
     
+
+
+    // Aquí puedes agregar métodos editarEmpresa() y deleteEmpresa() si quieres CRUD completo.
 }
 ?>

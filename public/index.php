@@ -7,7 +7,8 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $baseFolder = '/sorteo/public'; // Ajusta si tu carpeta cambia
 if (strpos($uri, $baseFolder) === 0) {
     $uri = substr($uri, strlen($baseFolder));
-    if ($uri === '') $uri = '/';
+    if ($uri === '')
+        $uri = '/';
 }
 // -------------------------------
 
@@ -19,6 +20,15 @@ if ($uri == '/' || $uri == '/index.php') {
     $controller->admin();
 } elseif ($uri == '/registrar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $controller->registrar();
+} elseif ($uri == '/empresas') {
+    $controller->empresas();
+} elseif ($uri == '/crearEmpresa' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $controller->crearEmpresa();
+} elseif ($uri == '/editarEmpresa') {
+    $controller->editarEmpresa();
+} elseif ($uri == '/eliminarEmpresa') {
+    $controller->eliminarEmpresa();
+
 } else {
     http_response_code(404);
     echo "Página no encontrada.";
